@@ -294,8 +294,8 @@ _Party B runs:_
 $ dcratomicswap --testnet participate TsfWDVTAcsLaHUhHnLLKkGnZuJz2vkmM6Vr 1.0 29c36b8dd380e0426bdc1d834e74a630bfd5d111
 Passphrase:
 
-Contract fee: 0.000251 DCR (0.00100400 DCR/kB)
-Refund fee:   0.000301 DCR (0.00100669 DCR/kB)
+Contract fee: 0.000251 CNMC (0.00100400 CNMC/kB)
+Refund fee:   0.000301 CNMC (0.00100669 CNMC/kB)
 
 Contract (TcZpybEVDVTuoE3TCBxW3ui12YEZWrw5ccS):
 63a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a9149ee19833332a04d2be97b5c99c970191221c070c6704e6dabb59b17576a914b0ec0640c89cf803b8fdbd6e0183c354f71748c46888ac
@@ -317,8 +317,8 @@ Just as B needed to audit A's contract before locking their coins in a contract,
 A must do the same with B's contract before withdrawing from the contract.  A
 audits the contract and contract transaction to verify:
 
-1. The recipient address was the DCR address that was provided to B
-2. The contract value is the expected amount of DCR to receive
+1. The recipient address was the CNMC address that was provided to B
+2. The contract value is the expected amount of CNMC to receive
 3. The locktime was set to 24 hours in the future
 4. The secret hash matches the value previously known
 
@@ -326,7 +326,7 @@ _Party A runs:_
 ```
 $ dcratomicswap --testnet auditcontract 63a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a9149ee19833332a04d2be97b5c99c970191221c070c6704e6dabb59b17576a914b0ec0640c89cf803b8fdbd6e0183c354f71748c46888ac 010000000137afc6c25b027cb0a1db19a7aac365854796260c4c1077e3e8accae5e4c300e90300000001ffffffff02441455980100000000001976a9144d7c96b6d2360e48a07528332e537d81e068f8ba88ac00e1f50500000000000017a914195fb53333e61a415e9fda21bb991b38b5a4e1c387000000000000000001ffffffffffffffff00000000ffffffff6b483045022100b30971448c93be84c28b98ae159963e9521a84d0c3849821b6e8897d59cf4e6c0220228785cb8d1dba40752e4bd09d99b92b27bc3837b1c547f8b4ee8aba1dfec9310121035a12a086ecd1397f7f68146f4f251253b7c0092e167a1c92ff9e89cf96c68b5f
 Contract address:        TcZpybEVDVTuoE3TCBxW3ui12YEZWrw5ccS
-Contract value:          1 DCR
+Contract value:          1 CNMC
 Recipient address:       TsfWDVTAcsLaHUhHnLLKkGnZuJz2vkmM6Vr
 Author's refund address: Tsh9c9aytRaDcbLLxDRcQDRx66aXATh28R3
 
@@ -345,7 +345,7 @@ _Party A runs:_
 $ dcratomicswap --testnet redeem 63a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a9149ee19833332a04d2be97b5c99c970191221c070c6704e6dabb59b17576a914b0ec0640c89cf803b8fdbd6e0183c354f71748c46888ac 010000000137afc6c25b027cb0a1db19a7aac365854796260c4c1077e3e8accae5e4c300e90300000001ffffffff02441455980100000000001976a9144d7c96b6d2360e48a07528332e537d81e068f8ba88ac00e1f50500000000000017a914195fb53333e61a415e9fda21bb991b38b5a4e1c387000000000000000001ffffffffffffffff00000000ffffffff6b483045022100b30971448c93be84c28b98ae159963e9521a84d0c3849821b6e8897d59cf4e6c0220228785cb8d1dba40752e4bd09d99b92b27bc3837b1c547f8b4ee8aba1dfec9310121035a12a086ecd1397f7f68146f4f251253b7c0092e167a1c92ff9e89cf96c68b5f 3e0b064c97247732a3b345ce7b2a835d928623cb2871c26db4c2539a38e61a16
 Passphrase:
 
-Redeem fee: 0.000334 DCR (0.00100300 DCR/kB)
+Redeem fee: 0.000334 CNMC (0.00100300 CNMC/kB)
 
 Redeem transaction (53c2e8bafb8fe36d54bbb1884141a39ea4da83db30bdf3c98ef420cdb332b0e7):
 000000000118d94f38b8532bfe78bda0d0848a7965bdfbe6e88476896f01318717bc7e1aa50100000000ffffffff01885ef5050000000000001976a9149551ab760ba64b7e573f54d34c53506676e8145888ace6dabb590000000001ffffffffffffffff00000000ffffffffe0483045022100a1a3b37a67f3ed5d6445a0312e825299b54d91a09e0d1b59b5c0a8baa7c0642102201a0d53e9efe7db8dc47210b446fde6425be82761252ff0ebe620efc183788d86012103395a4a3c8c96ef5e5af6fd80ae42486b5d3d860bf3b41dafc415354de8c7ad80203e0b064c97247732a3b345ce7b2a835d928623cb2871c26db4c2539a38e61a16514c5163a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a9149ee19833332a04d2be97b5c99c970191221c070c6704e6dabb59b17576a914b0ec0640c89cf803b8fdbd6e0183c354f71748c46888ac
@@ -421,7 +421,7 @@ links to the four raw transactions published in the example:
 | A's Cryptonodes redemption | https://testnet.decred.org/api/rawtx/53c2e8bafb8fe36d54bbb1884141a39ea4da83db30bdf3c98ef420cdb332b0e7 |
 | B's Bitcoin redemption | https://test-insight.bitpay.com/api/rawtx/c49e6fd0057b601dbb8856ad7b3fcb45df626696772f6901482b08df0333e5a0 |
 
-## First mainnet DCR-LTC atomic swap
+## First mainnet CNMC-LTC atomic swap
 
 | Description | Link to raw transaction |
 | - | - |

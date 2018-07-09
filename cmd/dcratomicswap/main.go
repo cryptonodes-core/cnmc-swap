@@ -684,8 +684,8 @@ func (cmd *initiateCmd) runCommand(ctx context.Context, c pb.WalletServiceClient
 	fmt.Printf("\n")
 	fmt.Printf("Secret:      %x\n", secret)
 	fmt.Printf("Secret hash: %x\n\n", secretHash)
-	fmt.Printf("Contract fee: %v (%0.8f DCR/kB)\n", b.contractFee, contractFeePerKb)
-	fmt.Printf("Refund fee:   %v (%0.8f DCR/kB)\n\n", b.refundFee, refundFeePerKb)
+	fmt.Printf("Contract fee: %v (%0.8f CNMC/kB)\n", b.contractFee, contractFeePerKb)
+	fmt.Printf("Refund fee:   %v (%0.8f CNMC/kB)\n\n", b.refundFee, refundFeePerKb)
 	fmt.Printf("Contract (%v):\n", b.contractP2SH)
 	fmt.Printf("%x\n\n", b.contract)
 	var contractBuf bytes.Buffer
@@ -727,8 +727,8 @@ func (cmd *participateCmd) runCommand(ctx context.Context, c pb.WalletServiceCli
 	refundFeePerKb := calcFeePerKb(b.refundFee, b.refundTx.SerializeSize())
 
 	fmt.Printf("\n")
-	fmt.Printf("Contract fee: %v (%0.8f DCR/kB)\n", b.contractFee, contractFeePerKb)
-	fmt.Printf("Refund fee:   %v (%0.8f DCR/kB)\n\n", b.refundFee, refundFeePerKb)
+	fmt.Printf("Contract fee: %v (%0.8f CNMC/kB)\n", b.contractFee, contractFeePerKb)
+	fmt.Printf("Refund fee:   %v (%0.8f CNMC/kB)\n\n", b.refundFee, refundFeePerKb)
 	fmt.Printf("Contract (%v):\n", b.contractP2SH)
 	fmt.Printf("%x\n\n", b.contract)
 	var contractBuf bytes.Buffer
@@ -841,7 +841,7 @@ func (cmd *redeemCmd) runCommand(ctx context.Context, c pb.WalletServiceClient) 
 	buf.Grow(redeemTx.SerializeSize())
 	redeemTx.Serialize(&buf)
 	fmt.Printf("\n")
-	fmt.Printf("Redeem fee: %v (%0.8f DCR/kB)\n\n", fee, redeemFeePerKb)
+	fmt.Printf("Redeem fee: %v (%0.8f CNMC/kB)\n\n", fee, redeemFeePerKb)
 	fmt.Printf("Redeem transaction (%v):\n", &redeemTxHash)
 	fmt.Printf("%x\n\n", buf.Bytes())
 
@@ -888,7 +888,7 @@ func (cmd *refundCmd) runCommand(ctx context.Context, c pb.WalletServiceClient) 
 	refundFeePerKb := calcFeePerKb(refundFee, refundTx.SerializeSize())
 
 	fmt.Printf("\n")
-	fmt.Printf("Refund fee: %v (%0.8f DCR/kB)\n\n", refundFee, refundFeePerKb)
+	fmt.Printf("Refund fee: %v (%0.8f CNMC/kB)\n\n", refundFee, refundFeePerKb)
 	fmt.Printf("Refund transaction (%v):\n", &refundTxHash)
 	fmt.Printf("%x\n\n", buf.Bytes())
 
