@@ -420,7 +420,7 @@ links to the four raw transactions published in the example:
 | A's Cryptonodes redemption | https://testnet.decred.org/api/rawtx/53c2e8bafb8fe36d54bbb1884141a39ea4da83db30bdf3c98ef420cdb332b0e7 |
 | B's Bitcoin redemption | https://test-insight.bitpay.com/api/rawtx/c49e6fd0057b601dbb8856ad7b3fcb45df626696772f6901482b08df0333e5a0 |
 
-## First mainnet CNMC-LTC atomic swap
+## First mainnet CNMC-LTC swap
 
 | Description | Link to raw transaction |
 | - | - |
