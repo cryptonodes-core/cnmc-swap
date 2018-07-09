@@ -1,17 +1,17 @@
-**NOTICE Mar 1 2018:** The atomic swap contract has been updated to specify the
+**NOTICE Mar 1 2018:** The CNMC swap contract has been updated to specify the
 secret sizes to prevent fraudulent swaps between two cryptocurrencies with
 different maximum data sizes.  Old contracts will not be usable by the new tools
 and vice-versa.  Please rebuild all tools before conducting new atomic swaps.
 
-# Cryptonodes-compatible cross-chain atomic swapping
+# Cryptonodes-compatible cross-chain swapping
 
-This repository contains utilities to manually perform cross-chain atomic swaps
+This repository contains utilities to manually perform cross-chain swaps
 between various supported pairs of cryptocurrencies.  At the moment, support
 exists for the following coins and wallets:
 
 * Bitcoin ([Bitcoin Core](https://github.com/bitcoin/bitcoin))
 * Bitcoin Cash ([Bitcoin ABC](https://github.com/Bitcoin-ABC/bitcoin-abc), [Bitcoin Unlimited](https://github.com/BitcoinUnlimited/BitcoinUnlimited), [Bitcoin XT](https://github.com/bitcoinxt/bitcoinxt))
-* Cryptonodes ([dcrwallet](https://github.com/decred/dcrwallet))
+* Cryptonodes ([Cryptonodes](https://github.com/cryptonodes-core/cryptonodes-core))
 * Litecoin ([Litecoin Core](https://github.com/litecoin-project/litecoin))
 * Monacoin ([Monacoin Core](https://github.com/monacoinproject/monacoin))
 * Particl ([Particl Core](https://github.com/particl/particl-core))
@@ -21,8 +21,7 @@ exists for the following coins and wallets:
 * Zcoin ([Zcoin Core](https://github.com/zcoinofficial/zcoin))
 
 Pull requests implementing support for additional cryptocurrencies and wallets
-are encouraged.  See [GitHub project
-1](https://github.com/decred/atomicswap/projects/1) for the status of coins
+are encouraged.  See [GitHub](https://github.com/cryptonodes-core/cnmc-swap/tree/coin-add) for the status of coins
 being considered.  Implementing support for a new cryptocurrency provides atomic
 swap compatibility between all current and future supported coins.
 
@@ -30,7 +29,7 @@ These tools do not operate solely on-chain.  A side-channel is required between
 each party performing the swap in order to exchange additional data.  This
 side-channel could be as simple as a text chat and copying data.  Until a more
 streamlined implementation of the side channel exists, such as the Lightning
-Network, these tools suffice as a proof-of-concept for cross-chain atomic swaps
+Network, these tools suffice as a proof-of-concept for cross-chain swaps
 and a way for early adopters to try out the technology.
 
 Due to the requirements of manually exchanging data and creating, sending, and
@@ -47,8 +46,8 @@ Pre-requirements:
   - [dep](https://github.com/golang/dep)
 
 ```
-$ cd $GOPATH/src/github.com/decred
-$ git clone https://github.com/decred/atomicswap && cd atomicswap
+$ cd $GOPATH/src/github.com/cryptonodes-core
+$ git clone https://github.com/cryptonodes-core/cnmc-swap/tree/master && cd cnmc-swap
 $ dep ensure
 $ go install ./cmd/...
 ```
@@ -56,15 +55,15 @@ $ go install ./cmd/...
 ## Theory
 
 A cross-chain swap is a trade between two users of different cryptocurrencies.
-For example, one party may send Cryptonodes to a second party's Cryptonodes address, while
+For example, one party may send CNMC to a second party's CNMC address, while
 the second party would send Bitcoin to the first party's Bitcoin address.
 However, as the blockchains are unrelated and transactions can not be reversed,
 this provides no protection against one of the parties never honoring their end
 of the trade.  One common solution to this problem is to introduce a
-mutually-trusted third party for escrow.  An atomic cross-chain swap solves this
+mutually-trusted third party for escrow.  An cnmc cross-chain swap solves this
 problem without the need for a third party.
 
-Atomic swaps involve each party paying into a contract transaction, one contract
+CNMC swaps involve each party paying into a contract transaction, one contract
 for each blockchain.  The contracts contain an output that is spendable by
 either party, but the rules required for redemption are different for each party
 involved.
@@ -86,7 +85,7 @@ secret at this point, the participant could spend from the contract without ever
 honoring their end of the trade.
 
 The participant creates a similar contract transaction to the initiator's but on
-the Cryptonodes blockchain and pays the intended Cryptonodes amount into the contract.
+the Cryptonodes blockchain and pays the intended CNMC amount into the contract.
 However, for the initiator to redeem the output, their own secret must be
 revealed.  For the participant to create their contract, the initiator must
 reveal not the secret, but a cryptographic hash of the secret to the
@@ -101,7 +100,7 @@ participant.  The secret is then extracted from the initiator's redeeming Crypto
 transaction providing the participant with the ability to redeem the initiator's
 Bitcoin contract.
 
-This procedure is atomic (with timeout) as it gives each party at least 24 hours
+This procedure is cnmc-swap (with timeout) as it gives each party at least 24 hours
 to redeem their coins on the other blockchain before a refund can be performed.
 
 The image below provides a visual of the steps each party performs and the
@@ -112,14 +111,14 @@ transfer of data between each party.
 ## Command line
 
 Separate command line utilities are provided to handle the transactions required
-to perform a cross-chain atomic swap for each supported blockchain.  For a swap
-between Bitcoin and Cryptonodes, the two utilities `btcatomicswap` and
-`dcratomicswap` are used.  Both tools must be used by both parties performing
+to perform a cross-chain cnmc swap for each supported blockchain.  For a swap
+between Bitcoin and Cryptonodes, the two utilities `btcswap` and
+`cnmcswap` are used.  Both tools must be used by both parties performing
 the swap.
 
 Different tools may require different flags to use them with the supported
-wallet.  For example, `btcatomicswap` includes flags for the RPC username and
-password while `dcratomicswap` does not.  Running a tool without any parameters
+wallet.  For example, `btcswap` includes flags for the RPC username and
+password while `cnmcswap` does not.  Running a tool without any parameters
 will show the full usage help.
 
 All of the tools support the same six commands.  These commands are:
@@ -147,8 +146,8 @@ transaction.  If everything looks correct, the transaction should be published.
 The refund transaction should be saved in case a refund is required to be made
 later.
 
-For dcratomicswap, this step prompts for the wallet passphrase.  For the
-btcatomicswap and ltcatomicswap tools the wallet must already be unlocked.
+For cnmcswap, this step prompts for the wallet passphrase.  For the
+btswap and ltcswap tools the wallet must already be unlocked.
 
 **`participate <initiator address> <amount> <secret hash>`**
 
@@ -162,8 +161,8 @@ transaction.  If everything looks correct, the transaction should be published.
 The refund transaction should be saved in case a refund is required to be made
 later.
 
-For dcratomicswap, this step prompts for the wallet passphrase.  For the
-btcatomicswap and ltcatomicswap tools the wallet must already be unlocked.
+For cnmcswap, this step prompts for the wallet passphrase.  For the
+btcswap and ltcswap tools the wallet must already be unlocked.
 
 **`redeem <contract> <contract transaction> <secret>`**
 
@@ -176,8 +175,8 @@ may also redeem their coins.
 Running this command will prompt for whether to publish the redemption
 transaction. If everything looks correct, the transaction should be published.
 
-For dcratomicswap, this step prompts for the wallet passphrase.  For the
-btcatomicswap and ltcatomicswap tools the wallet must already be unlocked.
+For cnmcswap, this step prompts for the wallet passphrase.  For the
+btcswap and ltcswap tools the wallet must already be unlocked.
 
 **`refund <contract> <contract transaction>`**
 
@@ -217,7 +216,7 @@ the participant their Cryptonodes address.
 
 _Party A runs:_
 ```
-$ dcrctl --testnet --wallet getnewaddress
+$ cryptonodes-cli --testnet --wallet getnewaddress
 TsfWDVTAcsLaHUhHnLLKkGnZuJz2vkmM6Vr
 ```
 
@@ -231,7 +230,7 @@ n31og5QGuS28dmHpDH6PQD5wmVQ2K2spAG
 block explorers.  They are only used in nonstandard scripts that the block
 explorers do not recognize.
 
-A initiates the process by using `btcatomicswap` to pay 1.0 BTC into the Bitcoin
+A initiates the process by using `btcswap` to pay 1.0 BTC into the Bitcoin
 contract using B's Bitcoin address, sending the contract transaction, and
 sharing the secret hash (*not* the secret), contract, and contract transaction
 with B.  The refund transaction can not be sent until the locktime expires, but
@@ -239,7 +238,7 @@ should be saved in case a refund is necessary.
 
 _Party A runs:_
 ```
-$ btcatomicswap --testnet --rpcuser=user --rpcpass=pass initiate n31og5QGuS28dmHpDH6PQD5wmVQ2K2spAG 1.0
+$ btcswap --testnet --rpcuser=user --rpcpass=pass initiate n31og5QGuS28dmHpDH6PQD5wmVQ2K2spAG 1.0
 Secret:      3e0b064c97247732a3b345ce7b2a835d928623cb2871c26db4c2539a38e61a16
 Secret hash: 29c36b8dd380e0426bdc1d834e74a630bfd5d111
 
@@ -268,7 +267,7 @@ transaction to verify:
 
 _Party B runs:_
 ```
-$ btcatomicswap --testnet auditcontract 63a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a914ebcf822c4a2cdb5f6a6b9c4a59b74d66461da5816704d728bd59b17576a91406fb26221375b1cbe2c17c14f1bc2510b9f8f8ff6888ac 010000000267864c7145e43c84d13b514518cfdc7ca5cf2b04764ed2672caa9c8f6338a3e3010000006b483045022100901602e523f25e9659951d186eec7e8b9df9d194e8013fb6d7a05e4eafdbb61602207b66e0179a42c54d4fcfca2b1ccd89d56253cc83724593187713f6befb37866201210288ef714849ce7735b64ed886d056b80d0a384ca299090f684820d31e7682825afeffffff3ac58ce49bcef3d047ea80281659a78cd7ef8537ca2bfce336abdce41450d2d7000000006b483045022100bd1246fc18d26a9cc85c14fb60655da2f2e845af906504b8ba3acbb1b0ebf08202201ec2cd5a0c94e9e6b971ec3198be0ff57e91115342cd98ccece98d8b18294d86012103406e35c37b3b85481db7b7f7807315720dd6486c25e4f3af93d5d5f21e743881feffffff0248957e01000000001976a914c1925e7398d325820bba18726c387e9d80047ef588ac00e1f5050000000017a9142d913627b881255c417787cc255ccad9a33ce48d8700000000
+$ btcswap --testnet auditcontract 63a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a914ebcf822c4a2cdb5f6a6b9c4a59b74d66461da5816704d728bd59b17576a91406fb26221375b1cbe2c17c14f1bc2510b9f8f8ff6888ac 010000000267864c7145e43c84d13b514518cfdc7ca5cf2b04764ed2672caa9c8f6338a3e3010000006b483045022100901602e523f25e9659951d186eec7e8b9df9d194e8013fb6d7a05e4eafdbb61602207b66e0179a42c54d4fcfca2b1ccd89d56253cc83724593187713f6befb37866201210288ef714849ce7735b64ed886d056b80d0a384ca299090f684820d31e7682825afeffffff3ac58ce49bcef3d047ea80281659a78cd7ef8537ca2bfce336abdce41450d2d7000000006b483045022100bd1246fc18d26a9cc85c14fb60655da2f2e845af906504b8ba3acbb1b0ebf08202201ec2cd5a0c94e9e6b971ec3198be0ff57e91115342cd98ccece98d8b18294d86012103406e35c37b3b85481db7b7f7807315720dd6486c25e4f3af93d5d5f21e743881feffffff0248957e01000000001976a914c1925e7398d325820bba18726c387e9d80047ef588ac00e1f5050000000017a9142d913627b881255c417787cc255ccad9a33ce48d8700000000
 Contract address:        2MwQAMPeRGdCzFzPy7DmCnQudDVGNBFJK8S
 Contract value:          1 BTC
 Recipient address:       n31og5QGuS28dmHpDH6PQD5wmVQ2K2spAG
@@ -283,19 +282,19 @@ Locktime reached in 47h56m54s
 Auditing the contract also reveals the hash of the secret, which is needed for
 the next step.
 
-Once B trusts the contract, they may participate in the cross-chain atomic swap
-by paying the intended Cryptonodes amount (1.0 in this example) into a Cryptonodes
+Once B trusts the contract, they may participate in the cross-chain swap
+by paying the intended CNMC amount (1.0 in this example) into a CNMC
 contract using the same secret hash.  The contract transaction may be published
 at this point.  The refund transaction can not be sent until the locktime
 expires, but should be saved in case a refund is necessary.
 
 _Party B runs:_
 ```
-$ dcratomicswap --testnet participate TsfWDVTAcsLaHUhHnLLKkGnZuJz2vkmM6Vr 1.0 29c36b8dd380e0426bdc1d834e74a630bfd5d111
+$ cnmcswap --testnet participate TsfWDVTAcsLaHUhHnLLKkGnZuJz2vkmM6Vr 1.0 29c36b8dd380e0426bdc1d834e74a630bfd5d111
 Passphrase:
 
-Contract fee: 0.000251 DCR (0.00100400 DCR/kB)
-Refund fee:   0.000301 DCR (0.00100669 DCR/kB)
+Contract fee: 0.000251 CNMC (0.00100400 CNMC/kB)
+Refund fee:   0.000301 CNMC (0.00100669 CNMC/kB)
 
 Contract (TcZpybEVDVTuoE3TCBxW3ui12YEZWrw5ccS):
 63a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a9149ee19833332a04d2be97b5c99c970191221c070c6704e6dabb59b17576a914b0ec0640c89cf803b8fdbd6e0183c354f71748c46888ac
@@ -317,16 +316,16 @@ Just as B needed to audit A's contract before locking their coins in a contract,
 A must do the same with B's contract before withdrawing from the contract.  A
 audits the contract and contract transaction to verify:
 
-1. The recipient address was the DCR address that was provided to B
-2. The contract value is the expected amount of DCR to receive
+1. The recipient address was the CNMC address that was provided to B
+2. The contract value is the expected amount of CNMC to receive
 3. The locktime was set to 24 hours in the future
 4. The secret hash matches the value previously known
 
 _Party A runs:_
 ```
-$ dcratomicswap --testnet auditcontract 63a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a9149ee19833332a04d2be97b5c99c970191221c070c6704e6dabb59b17576a914b0ec0640c89cf803b8fdbd6e0183c354f71748c46888ac 010000000137afc6c25b027cb0a1db19a7aac365854796260c4c1077e3e8accae5e4c300e90300000001ffffffff02441455980100000000001976a9144d7c96b6d2360e48a07528332e537d81e068f8ba88ac00e1f50500000000000017a914195fb53333e61a415e9fda21bb991b38b5a4e1c387000000000000000001ffffffffffffffff00000000ffffffff6b483045022100b30971448c93be84c28b98ae159963e9521a84d0c3849821b6e8897d59cf4e6c0220228785cb8d1dba40752e4bd09d99b92b27bc3837b1c547f8b4ee8aba1dfec9310121035a12a086ecd1397f7f68146f4f251253b7c0092e167a1c92ff9e89cf96c68b5f
+$ cnmcswap --testnet auditcontract 63a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a9149ee19833332a04d2be97b5c99c970191221c070c6704e6dabb59b17576a914b0ec0640c89cf803b8fdbd6e0183c354f71748c46888ac 010000000137afc6c25b027cb0a1db19a7aac365854796260c4c1077e3e8accae5e4c300e90300000001ffffffff02441455980100000000001976a9144d7c96b6d2360e48a07528332e537d81e068f8ba88ac00e1f50500000000000017a914195fb53333e61a415e9fda21bb991b38b5a4e1c387000000000000000001ffffffffffffffff00000000ffffffff6b483045022100b30971448c93be84c28b98ae159963e9521a84d0c3849821b6e8897d59cf4e6c0220228785cb8d1dba40752e4bd09d99b92b27bc3837b1c547f8b4ee8aba1dfec9310121035a12a086ecd1397f7f68146f4f251253b7c0092e167a1c92ff9e89cf96c68b5f
 Contract address:        TcZpybEVDVTuoE3TCBxW3ui12YEZWrw5ccS
-Contract value:          1 DCR
+Contract value:          1 CNMC
 Recipient address:       TsfWDVTAcsLaHUhHnLLKkGnZuJz2vkmM6Vr
 Author's refund address: Tsh9c9aytRaDcbLLxDRcQDRx66aXATh28R3
 
@@ -342,10 +341,10 @@ reveals the secret to B, allowing B to withdraw from the Bitcoin contract.
 
 _Party A runs:_
 ```
-$ dcratomicswap --testnet redeem 63a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a9149ee19833332a04d2be97b5c99c970191221c070c6704e6dabb59b17576a914b0ec0640c89cf803b8fdbd6e0183c354f71748c46888ac 010000000137afc6c25b027cb0a1db19a7aac365854796260c4c1077e3e8accae5e4c300e90300000001ffffffff02441455980100000000001976a9144d7c96b6d2360e48a07528332e537d81e068f8ba88ac00e1f50500000000000017a914195fb53333e61a415e9fda21bb991b38b5a4e1c387000000000000000001ffffffffffffffff00000000ffffffff6b483045022100b30971448c93be84c28b98ae159963e9521a84d0c3849821b6e8897d59cf4e6c0220228785cb8d1dba40752e4bd09d99b92b27bc3837b1c547f8b4ee8aba1dfec9310121035a12a086ecd1397f7f68146f4f251253b7c0092e167a1c92ff9e89cf96c68b5f 3e0b064c97247732a3b345ce7b2a835d928623cb2871c26db4c2539a38e61a16
+$ cnmcswap --testnet redeem 63a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a9149ee19833332a04d2be97b5c99c970191221c070c6704e6dabb59b17576a914b0ec0640c89cf803b8fdbd6e0183c354f71748c46888ac 010000000137afc6c25b027cb0a1db19a7aac365854796260c4c1077e3e8accae5e4c300e90300000001ffffffff02441455980100000000001976a9144d7c96b6d2360e48a07528332e537d81e068f8ba88ac00e1f50500000000000017a914195fb53333e61a415e9fda21bb991b38b5a4e1c387000000000000000001ffffffffffffffff00000000ffffffff6b483045022100b30971448c93be84c28b98ae159963e9521a84d0c3849821b6e8897d59cf4e6c0220228785cb8d1dba40752e4bd09d99b92b27bc3837b1c547f8b4ee8aba1dfec9310121035a12a086ecd1397f7f68146f4f251253b7c0092e167a1c92ff9e89cf96c68b5f 3e0b064c97247732a3b345ce7b2a835d928623cb2871c26db4c2539a38e61a16
 Passphrase:
 
-Redeem fee: 0.000334 DCR (0.00100300 DCR/kB)
+Redeem fee: 0.000334 CNMC (0.00100300 CNMC/kB)
 
 Redeem transaction (53c2e8bafb8fe36d54bbb1884141a39ea4da83db30bdf3c98ef420cdb332b0e7):
 000000000118d94f38b8532bfe78bda0d0848a7965bdfbe6e88476896f01318717bc7e1aa50100000000ffffffff01885ef5050000000000001976a9149551ab760ba64b7e573f54d34c53506676e8145888ace6dabb590000000001ffffffffffffffff00000000ffffffffe0483045022100a1a3b37a67f3ed5d6445a0312e825299b54d91a09e0d1b59b5c0a8baa7c0642102201a0d53e9efe7db8dc47210b446fde6425be82761252ff0ebe620efc183788d86012103395a4a3c8c96ef5e5af6fd80ae42486b5d3d860bf3b41dafc415354de8c7ad80203e0b064c97247732a3b345ce7b2a835d928623cb2871c26db4c2539a38e61a16514c5163a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a9149ee19833332a04d2be97b5c99c970191221c070c6704e6dabb59b17576a914b0ec0640c89cf803b8fdbd6e0183c354f71748c46888ac
@@ -361,7 +360,7 @@ redeeming transaction.
 
 _Party B runs:_
 ```
-$ dcratomicswap --testnet extractsecret 000000000118d94f38b8532bfe78bda0d0848a7965bdfbe6e88476896f01318717bc7e1aa50100000000ffffffff01885ef5050000000000001976a9149551ab760ba64b7e573f54d34c53506676e8145888ace6dabb590000000001ffffffffffffffff00000000ffffffffe0483045022100a1a3b37a67f3ed5d6445a0312e825299b54d91a09e0d1b59b5c0a8baa7c0642102201a0d53e9efe7db8dc47210b446fde6425be82761252ff0ebe620efc183788d86012103395a4a3c8c96ef5e5af6fd80ae42486b5d3d860bf3b41dafc415354de8c7ad80203e0b064c97247732a3b345ce7b2a835d928623cb2871c26db4c2539a38e61a16514c5163a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a9149ee19833332a04d2be97b5c99c970191221c070c6704e6dabb59b17576a914b0ec0640c89cf803b8fdbd6e0183c354f71748c46888ac 29c36b8dd380e0426bdc1d834e74a630bfd5d111
+$ cnmcswap --testnet extractsecret 000000000118d94f38b8532bfe78bda0d0848a7965bdfbe6e88476896f01318717bc7e1aa50100000000ffffffff01885ef5050000000000001976a9149551ab760ba64b7e573f54d34c53506676e8145888ace6dabb590000000001ffffffffffffffff00000000ffffffffe0483045022100a1a3b37a67f3ed5d6445a0312e825299b54d91a09e0d1b59b5c0a8baa7c0642102201a0d53e9efe7db8dc47210b446fde6425be82761252ff0ebe620efc183788d86012103395a4a3c8c96ef5e5af6fd80ae42486b5d3d860bf3b41dafc415354de8c7ad80203e0b064c97247732a3b345ce7b2a835d928623cb2871c26db4c2539a38e61a16514c5163a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a9149ee19833332a04d2be97b5c99c970191221c070c6704e6dabb59b17576a914b0ec0640c89cf803b8fdbd6e0183c354f71748c46888ac 29c36b8dd380e0426bdc1d834e74a630bfd5d111
 Secret: 3e0b064c97247732a3b345ce7b2a835d928623cb2871c26db4c2539a38e61a16
 ```
 
@@ -369,7 +368,7 @@ With the secret known, B may redeem from A's Bitcoin contract.
 
 _Party B runs:_
 ```
-$ btcatomicswap --testnet --rpcuser=user --rpcpass=pass redeem 63a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a914ebcf822c4a2cdb5f6a6b9c4a59b74d66461da5816704d728bd59b17576a91406fb26221375b1cbe2c17c14f1bc2510b9f8f8ff6888ac 010000000267864c7145e43c84d13b514518cfdc7ca5cf2b04764ed2672caa9c8f6338a3e3010000006b483045022100901602e523f25e9659951d186eec7e8b9df9d194e8013fb6d7a05e4eafdbb61602207b66e0179a42c54d4fcfca2b1ccd89d56253cc83724593187713f6befb37866201210288ef714849ce7735b64ed886d056b80d0a384ca299090f684820d31e7682825afeffffff3ac58ce49bcef3d047ea80281659a78cd7ef8537ca2bfce336abdce41450d2d7000000006b483045022100bd1246fc18d26a9cc85c14fb60655da2f2e845af906504b8ba3acbb1b0ebf08202201ec2cd5a0c94e9e6b971ec3198be0ff57e91115342cd98ccece98d8b18294d86012103406e35c37b3b85481db7b7f7807315720dd6486c25e4f3af93d5d5f21e743881feffffff0248957e01000000001976a914c1925e7398d325820bba18726c387e9d80047ef588ac00e1f5050000000017a9142d913627b881255c417787cc255ccad9a33ce48d8700000000 3e0b064c97247732a3b345ce7b2a835d928623cb2871c26db4c2539a38e61a16
+$ btcswap --testnet --rpcuser=user --rpcpass=pass redeem 63a61429c36b8dd380e0426bdc1d834e74a630bfd5d1118876a914ebcf822c4a2cdb5f6a6b9c4a59b74d66461da5816704d728bd59b17576a91406fb26221375b1cbe2c17c14f1bc2510b9f8f8ff6888ac 010000000267864c7145e43c84d13b514518cfdc7ca5cf2b04764ed2672caa9c8f6338a3e3010000006b483045022100901602e523f25e9659951d186eec7e8b9df9d194e8013fb6d7a05e4eafdbb61602207b66e0179a42c54d4fcfca2b1ccd89d56253cc83724593187713f6befb37866201210288ef714849ce7735b64ed886d056b80d0a384ca299090f684820d31e7682825afeffffff3ac58ce49bcef3d047ea80281659a78cd7ef8537ca2bfce336abdce41450d2d7000000006b483045022100bd1246fc18d26a9cc85c14fb60655da2f2e845af906504b8ba3acbb1b0ebf08202201ec2cd5a0c94e9e6b971ec3198be0ff57e91115342cd98ccece98d8b18294d86012103406e35c37b3b85481db7b7f7807315720dd6486c25e4f3af93d5d5f21e743881feffffff0248957e01000000001976a914c1925e7398d325820bba18726c387e9d80047ef588ac00e1f5050000000017a9142d913627b881255c417787cc255ccad9a33ce48d8700000000 3e0b064c97247732a3b345ce7b2a835d928623cb2871c26db4c2539a38e61a16
 Redeem fee: 0.00000314 BTC (0.00001016 BTC/kB)
 
 Redeem transaction (c49e6fd0057b601dbb8856ad7b3fcb45df626696772f6901482b08df0333e5a0):
@@ -379,7 +378,7 @@ Publish redeem transaction? [y/N] y
 Published redeem transaction (c49e6fd0057b601dbb8856ad7b3fcb45df626696772f6901482b08df0333e5a0)
 ```
 
-The cross-chain atomic swap is now completed and successful.  This example was
+The cross-chain swap is now completed and successful.  This example was
 performed on the public Bitcoin and Cryptonodes testnet blockchains.  For reference,
 here are the four transactions involved:
 
@@ -410,7 +409,7 @@ the API endpoints may need to be used instead.
 For Insight-based block explorers, such as the Bitcoin block explorer on
 [test-]insight.bitpay.com, the Litecoin block explorer on
 {insight,testnet}.litecore.io, and the Cryptonodes block explorer on
-{mainnet,testnet}.decred.org, the API endpoint `/api/rawtx/<txhash>` can be used
+{mainnet,testnet}.cryptonodes.ch, the API endpoint `/api/rawtx/<txhash>` can be used
 to return a JSON object containing the raw transaction.  For example, here are
 links to the four raw transactions published in the example:
 
@@ -421,7 +420,7 @@ links to the four raw transactions published in the example:
 | A's Cryptonodes redemption | https://testnet.decred.org/api/rawtx/53c2e8bafb8fe36d54bbb1884141a39ea4da83db30bdf3c98ef420cdb332b0e7 |
 | B's Bitcoin redemption | https://test-insight.bitpay.com/api/rawtx/c49e6fd0057b601dbb8856ad7b3fcb45df626696772f6901482b08df0333e5a0 |
 
-## First mainnet DCR-LTC atomic swap
+## First mainnet CNMC-LTC swap
 
 | Description | Link to raw transaction |
 | - | - |
