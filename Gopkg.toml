@@ -35,11 +35,11 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/decred/dcrd"
+  name = "github.com/cryptonodes-core/cryptonodesd"
 
 [[constraint]]
   branch = "master"
-  name = "github.com/decred/dcrwallet"
+  name = "github.com/cryptonodes-core/cnmcwallet"
 
 [[constraint]]
   branch = "master"
@@ -105,7 +105,7 @@
   name = "github.com/DesWurstes/btcd"
 
 [[constraint]]
-  # Further commits have not been tested with bchatomicswap yet.
+  # Further commits have not been tested with bchswap yet.
   revision = "223045ec4d9ef2fcc7c6ed62f9a8ed80ac9bdf58"
   name = "github.com/cpacia/bchutil"
 
