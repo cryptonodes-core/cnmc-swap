@@ -1,4 +1,4 @@
-**NOTICE Mar 1 2018:** The CNMC swap contract has been updated to specify the
+**Develop Version, not for production now!** The CNMC swap contract has been updated to specify the
 secret sizes to prevent fraudulent swaps between two cryptocurrencies with
 different maximum data sizes.  Old contracts will not be usable by the new tools
 and vice-versa.  Please rebuild all tools before conducting new atomic swaps.
